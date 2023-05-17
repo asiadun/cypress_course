@@ -1,1 +1,1 @@
-cy.request(https://mailfence.com/)
+cy.request(mailfence.com)
