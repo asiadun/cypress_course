@@ -1,6 +1,8 @@
 Start page https://mailfence.com/
 
 1. Login to Mail.
+    - cypqa@mailfence.com
+    - cypqa12345
 2. Attach .txt ffile
 3. Send email with attached file to yourself
 4. Check that email recieved
