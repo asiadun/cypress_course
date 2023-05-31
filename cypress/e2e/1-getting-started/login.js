@@ -10,27 +10,27 @@ describe("Test Mailfence.com", () => {
     cy.get("#UserID").type("cypqa@mailfence.com"); // Input Login
     cy.get("#Password").type("cypqa12345"); // Input Password
     cy.get(".btn").click();
-    cy.wait(3000); //Techdebt: change 'timeout' to some trigger with fully loaded page
+    cy.wait(1000); //Techdebt: change 'timeout' to some trigger with fully loaded page
 
-    // // //Test 2 - Attach *.txt file
-    // // cy.get("#nav-docs").click(); // Open "Documents" tab
-    // // cy.writeFile(
-    // //   "C:\\work\\cypress_course\\test_file.txt",
-    // //   "Lorem Ipsum is simply dummy text of the printing and typesetting industry. \
-    // //     Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, \
-    // //     when an unknown printer took a galley of type and scrambled it to make a type \
-    // //     specimen book. It has survived not only five centuries, but also the leap into \
-    // //     electronic typesetting, remaining essentially unchanged. It was popularised in \
-    // //     the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, \
-    // //     and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-    // // );
-    // // cy.readFile("C:\\work\\cypress_course\\test_file.txt").should("not.be.null");
-    // // cy.get("input[type=file]").selectFile("test_file.txt", {
-    // //   action: "drag-drop",
-    // //   force: true,
-    // // });
-    // // cy.wait(1000);
-    // // cy.get(".GCSDBRWBK5B").click(); // Click on [Close] button on drag&drop window
+    //Test 2 - Attach *.txt file
+    cy.get("#nav-docs").click(); // Open "Documents" tab
+    cy.writeFile(
+      "C:\\work\\cypress_course\\test_file.txt",
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. \
+        Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, \
+        when an unknown printer took a galley of type and scrambled it to make a type \
+        specimen book. It has survived not only five centuries, but also the leap into \
+        electronic typesetting, remaining essentially unchanged. It was popularised in \
+        the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, \
+        and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+    );
+    cy.readFile("C:\\work\\cypress_course\\test_file.txt").should("not.be.null");
+    cy.get("input[type=file]").selectFile("test_file.txt", {
+      action: "drag-drop",
+      force: true,
+    });
+    cy.wait(1000);
+    cy.get(".GCSDBRWBK5B").click(); // Click on [Close] button on drag&drop window
 
     //Test 3 - Send email with attached file to yourself
     cy.get("#nav-mail").click(); // Open "Messages" tab
@@ -70,46 +70,41 @@ describe("Test Mailfence.com", () => {
     cy.get("#dialBtn_OK:visible").should("not.contain.class", "GCSDBRWBMB").click();
     cy.wait(3000);
 
-    //Test 7 - Open "Documents" area
+    // //Test 7 - Open "Documents" area
     cy.get("#nav-docs").click(); // Open "Documents" tab
 
     //Test 8 - Move file from "Мои документы" to "Trash"
-    cy.wait(5000);
-    cy.pause();
-    cy.get(".GCSDBRWBFT").contains("test_file.txt").click().trigger("dragstart", { dataTransfer });
-    cy.get(".GCSDBRWBFT").contains("test_file.txt").trigger("dragover");
-    cy.get("#doc_tree_trash").trigger("drop", { dataTransfer });
-    cy.wait(3000);
+    cy.wait(2000);
+
+    // Doesn't work #1
+    // cy.get(".GCSDBRWBAU").contains("test_file.txt").click();
+    // cy.get(".GCSDBRWBBU.GCSDBRWBDU.trow.selectedRow.widgetActive").trigger("dragstart", { dataTransfer, force: true });
+    // // cy.get(".GCSDBRWBBU.GCSDBRWBDU.trow.selectedRow.widgetActive").trigger("dragover", { dataTransfer, force: true });
+    // cy.get(".GCSDBRWBBU.GCSDBRWBDU.trow.selectedRow.widgetActive").trigger("mousemove", { force: true });
+    // cy.get("#doc_tree_trash").trigger("drop", { dataTransfer, force: true });
+
+    ////Doesn't work #2
+    // cy.get(".GCSDBRWBAU").contains("test_file.txt").click();
+    // cy.get(".GCSDBRWBAU").contains("test_file.txt").trigger("dragstart", { dataTransfer, force: true });
+    // // cy.get(".GCSDBRWBBU.GCSDBRWBDU.trow.selectedRow.widgetActive").trigger("dragover", { dataTransfer, force: true });
+    // cy.get(".GCSDBRWBAU").contains("test_file.txt").trigger("dragover", { force: true });
+    // cy.get("#doc_tree_trash").trigger("drop", { dataTransfer, force: true });
+    // ///Doesn't work #3
+    // cy.get(".GCSDBRWBAU").contains("test_file.txt").click();
+    // cy.get(".GCSDBRWBAU").contains("test_file.txt").trigger("mousedown");
+    // // cy.get(".GCSDBRWBBU.GCSDBRWBDU.trow.selectedRow.widgetActive").trigger("dragover", { dataTransfer, force: true });
+    // cy.get(".GCSDBRWBAU").contains("test_file.txt").trigger("mousemove");
+    // cy.get("#doc_tree_trash").trigger("mouseup");
+
+    // // Doesn't work #4
+    // // cy.get(".GCSDBRWBAU").contains("test_file.txt").click();
+    // // cy.get(".GCSDBRWBBU.GCSDBRWBDU.trow.selectedRow.widgetActive").trigger("mousedown", { force: true });
+    // // cy.get(".GCSDBRWBBU.GCSDBRWBDU.trow.selectedRow.widgetActive").trigger("mousemove", { force: true });
+    // // cy.get("#doc_tree_trash").trigger("mouseup");
+    // cy.wait(3000);
+
+    // cy.clearAllCookies({ log: true });
+    // cy.clearAllLocalStorage({ log: true });
+    // cy.clearAllSessionStorage({ log: true });
   });
 });
-
-// it('can add new todo items', () => {
-//   const newItem = 'Feed the cat'
-//   cy.get('[data-test=new-todo]').type(`${newItem}{enter}`)
-//   cy.get('.todo-list li')
-//     .should('have.length', 3)
-//     .last()
-//     .should('have.text', newItem)
-// })
-// });
-
-/*
-
-1) tag <input /> -> "input" , <div> <p> <span> 
-
-2) class 
-  <input class="my-input" />
-  <div class="my-input superClass">
-
-  "div.my-input .superClass"
-
-3) id
-
-  <input id="my-input" />
-  <div class="my-input superClass">
-
-  "#my-input", "div#my-input.superClass"
-*/
-
-// a, input, button
-// div, tr, td, span with attribute -> onclick, clic
