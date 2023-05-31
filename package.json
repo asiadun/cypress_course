@@ -13,6 +13,7 @@
     "cypress": "^12.12.0"
   },
   "dependencies": {
-    "cypress-drag-drop": "^1.1.1"
+    "cypress-drag-drop": "^1.1.1",
+    "cypress-iframe": "^1.0.1"
   }
 }
