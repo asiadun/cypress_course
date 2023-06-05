@@ -10,10 +10,9 @@ describe("Test Mailfence.com", () => {
     cy.get("#UserID").type("cypqa@mailfence.com"); // Input Login
     cy.get("#Password").type("cypqa12345"); // Input Password
     cy.get(".btn").click();
-    cy.wait(1000); //Techdebt: change 'timeout' to some trigger with fully loaded page
 
     //Test 2 - Attach *.txt file
-    cy.get("#nav-docs").click(); // Open "Documents" tab
+    cy.get("#nav-docs").should("exist").click(); // Open "Documents" tab
     cy.writeFile(
       "C:\\work\\cypress_course\\test_file.txt",
       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. \
@@ -29,15 +28,14 @@ describe("Test Mailfence.com", () => {
       action: "drag-drop",
       force: true,
     });
-    cy.wait(1000);
     cy.get(".GCSDBRWBK5B").click(); // Click on [Close] button on drag&drop window
 
     //Test 3 - Send email with attached file to yourself
     cy.get("#nav-mail").click(); // Open "Messages" tab
     cy.get("#mailNewBtn").click(); // Click on [New] button
     cy.get("#mailTo").type("cypqa@mailfence.com;");
-    cy.get("#mailSubject").type("This is test email for Cypress_course");
-    cy.get(".editable ").click().type(
+    cy.get("#mailSubject").type("This is test email for Cypress_course"); // need to add unique title
+    cy.frameLoaded("").get(".editable ").click().type(
       "Привет!\
     Это тестовое письмо на русском языке.\
     С уважением,\
@@ -48,16 +46,12 @@ describe("Test Mailfence.com", () => {
     //Attach *.txt file
     cy.get(".GCSDBRWBAU tbody tr").contains("test_file.txt").click();
     cy.get("#dialBtn_OK").click();
-
-    cy.wait(1000);
     cy.get("#mailSend").click();
-    cy.wait(10000);
 
     //Test 4 - Check that email received
     cy.get("#nav-mail").click(); // Open "Messages" tab
     cy.get("#treeInbox").click(); // Open "Inbox"
-    cy.wait(10000);
-    cy.get(".GCSDBRWBBU.trow.listUnread").contains("This is test email for Cypress_course").should("exist");
+    cy.get(".GCSDBRWBBU.trow.listUnread").contains("").should("exist"); // need to check email by title
 
     //Test 5 - Open the received email
     cy.get(".GCSDBRWBBU.trow.listUnread").contains("This is test email for Cypress_course").click();
@@ -65,16 +59,30 @@ describe("Test Mailfence.com", () => {
     //Test 6 - Save the attached TXT file to "Documents"
     cy.get(".GCSDBRWBN a b").click({ force: true });
     cy.get(".GCSDBRWBOQ").contains("Save in Documents").click();
-    cy.wait(3000);
     cy.get(".treeItemLabel").contains("My documents").click();
     cy.get("#dialBtn_OK:visible").should("not.contain.class", "GCSDBRWBMB").click();
-    cy.wait(3000);
 
     // //Test 7 - Open "Documents" area
     cy.get("#nav-docs").click(); // Open "Documents" tab
 
     //Test 8 - Move file from "Мои документы" to "Trash"
-    cy.wait(2000);
+
+    Cypress.Commands.add("dragAndDrop", (subject, target) => {
+      Cypress.log({
+        name: "DRAGNDROP",
+        message: `Dragging element ${subject} to ${target}`,
+        consoleProps: () => {
+          return {
+            subject: subject,
+            target: target,
+          };
+        },
+      });
+      subject.trigger("mousedown", { button: 0 }).trigger("mousemove", { clientX: 100, clientY: 100 });
+      target.trigger("mousemove", { clientX: 100, clientY: 100 }).trigger("mouseup", { force: true });
+    });
+
+    cy.dragAndDrop(".GCSDBRWBBU.GCSDBRWBDU.trow.selectedRow.widgetActive", "#doc_tree_trash");
 
     // Doesn't work #1
     // cy.get(".GCSDBRWBAU").contains("test_file.txt").click();
