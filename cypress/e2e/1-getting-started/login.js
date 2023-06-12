@@ -1,6 +1,7 @@
 const dataTransfer = new DataTransfer();
 
-// const { defineConfig } = require("cypress");
+const uniqueSeed = Date.now().toString();
+const getUniqueId = () => Cypress._.uniqueId(uniqueSeed);
 
 describe("Test Mailfence.com", () => {
   beforeEach(() => {
@@ -9,11 +10,9 @@ describe("Test Mailfence.com", () => {
 
   //Test 1 - Login to mailfence.com
   it("Login to mailfence.com", () => {
-    cy.log(Cypress.env("CYPRESS_ENV"));
     cy.get("#UserID").type(Cypress.env("CYPRESS_login")); //type("cypqa@mailfence.com"); // Input Login
     cy.get("#Password").type(Cypress.env("CYPRESS_pass")); // Input Password
     cy.get(".btn").click();
-    // cypress.env("CYPRESS_pass");
 
     //Test 2 - Attach *.txt file
     cy.get("#nav-docs").should("exist").click(); // Open "Documents" tab
@@ -33,7 +32,7 @@ describe("Test Mailfence.com", () => {
     cy.get("#nav-mail").click(); // Open "Messages" tab
     cy.get("#mailNewBtn").click(); // Click on [New] button
     cy.get("#mailTo").type("cypqa@mailfence.com;");
-    cy.get("#mailSubject").type("This is test email for Cypress_course"); // need to add unique title
+    cy.get("#mailSubject").type(`AT_` + `getUniqueId()`); // need to add unique title
     cy.get(".editable").get(".editable ").click().type(
       "Привет!\
     Это тестовое письмо на русском языке.\
@@ -50,7 +49,7 @@ describe("Test Mailfence.com", () => {
     //Test 4 - Check that email received
     cy.get("#nav-mail").click(); // Open "Messages" tab
     cy.get("#treeInbox").click(); // Open "Inbox"
-    cy.get(".GCSDBRWBBU.trow.listUnread", { default: 10000 }).contains("This is test").should("exist"); // need to check email by title
+    cy.get(".GCSDBRWBBU.trow.listUnread", { default: 10000 }).contains("AT_").should("exist"); // need to check email by title
 
     //Test 5 - Open the received email
     cy.get(".GCSDBRWBBU.trow.listUnread").contains("This is test email for Cypress_course").click();
