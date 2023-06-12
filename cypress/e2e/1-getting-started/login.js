@@ -1,5 +1,7 @@
 const dataTransfer = new DataTransfer();
 
+// const { defineConfig } = require("cypress");
+
 describe("Test Mailfence.com", () => {
   beforeEach(() => {
     cy.visit("https://mailfence.com/sw?type=L&state=0&lf=mailfence");
@@ -7,21 +9,18 @@ describe("Test Mailfence.com", () => {
 
   //Test 1 - Login to mailfence.com
   it("Login to mailfence.com", () => {
-    cy.get("#UserID").type("cypqa@mailfence.com"); // Input Login
-    cy.get("#Password").type("cypqa12345"); // Input Password
+    cy.log(Cypress.env("CYPRESS_ENV"));
+    cy.get("#UserID").type(Cypress.env("CYPRESS_login")); //type("cypqa@mailfence.com"); // Input Login
+    cy.get("#Password").type(Cypress.env("CYPRESS_pass")); // Input Password
     cy.get(".btn").click();
+    // cypress.env("CYPRESS_pass");
 
     //Test 2 - Attach *.txt file
     cy.get("#nav-docs").should("exist").click(); // Open "Documents" tab
     cy.writeFile(
       "C:\\work\\cypress_course\\test_file.txt",
       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. \
-        Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, \
-        when an unknown printer took a galley of type and scrambled it to make a type \
-        specimen book. It has survived not only five centuries, but also the leap into \
-        electronic typesetting, remaining essentially unchanged. It was popularised in \
-        the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, \
-        and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+        Lorem Ipsum has been the industry's standard dummy text ever since the 1500s."
     );
     cy.readFile("C:\\work\\cypress_course\\test_file.txt").should("not.be.null");
     cy.get("input[type=file]").selectFile("test_file.txt", {
@@ -35,7 +34,7 @@ describe("Test Mailfence.com", () => {
     cy.get("#mailNewBtn").click(); // Click on [New] button
     cy.get("#mailTo").type("cypqa@mailfence.com;");
     cy.get("#mailSubject").type("This is test email for Cypress_course"); // need to add unique title
-    cy.frameLoaded("").get(".editable ").click().type(
+    cy.get(".editable").get(".editable ").click().type(
       "Привет!\
     Это тестовое письмо на русском языке.\
     С уважением,\
@@ -51,7 +50,7 @@ describe("Test Mailfence.com", () => {
     //Test 4 - Check that email received
     cy.get("#nav-mail").click(); // Open "Messages" tab
     cy.get("#treeInbox").click(); // Open "Inbox"
-    cy.get(".GCSDBRWBBU.trow.listUnread").contains("").should("exist"); // need to check email by title
+    cy.get(".GCSDBRWBBU.trow.listUnread", { default: 10000 }).contains("This is test").should("exist"); // need to check email by title
 
     //Test 5 - Open the received email
     cy.get(".GCSDBRWBBU.trow.listUnread").contains("This is test email for Cypress_course").click();
